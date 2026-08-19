@@ -28,7 +28,7 @@ body:before{
 }
 .screen.active{display:flex}
 .card{
-  position:relative;width:min(760px,94vw);max-height:90vh;overflow:auto;
+  position:relative;width:min(760px,94vw);max-height:90vh;overflow:hidden;
   padding:45px 35px;text-align:center;border:1px solid rgba(255,255,255,.25);
   border-radius:30px;background:rgba(255,255,255,.09);
   backdrop-filter:blur(15px);box-shadow:0 20px 70px rgba(0,0,0,.35);
@@ -121,10 +121,10 @@ button:hover{transform:translateY(-3px) scale(1.04)}
  <div class="card">
   <h2>Who is the prettiest lady<br>in this whole wide world? 👑</h2>
   <div class="question-options">
-   <button class="option" onclick="prettyChoice()">Me 😌</button>
-   <button class="option" onclick="prettyChoice()">Obviously me 💅</button>
-   <button class="option" onclick="prettyChoice()">ME! ❤️</button>
-   <button class="option" onclick="prettyChoice()">Who else? 😂</button>
+   <button class="option pretty-option" onclick="prettyChoice(this)">Me 😌</button>
+   <button class="option pretty-option" onclick="prettyChoice(this)">Obviously me 💅</button>
+   <button class="option pretty-option" onclick="prettyChoice(this)">ME! ❤️</button>
+   <button class="option pretty-option" onclick="prettyChoice(this)">Who else? 😂</button>
   </div>
  </div>
 </div>
@@ -134,10 +134,10 @@ button:hover{transform:translateY(-3px) scale(1.04)}
   <h2>Who is the hottest lady<br>in the entire world? 🔥</h2>
   <div class="subtitle">Think very carefully... there is only one correct answer.</div>
   <div class="question-options">
-   <button class="option" onclick="hotChoice()">Me 🔥</button>
-   <button class="option" onclick="hotChoice()">Still me 😏</button>
-   <button class="option" onclick="hotChoice()">Definitely ME ❤️</button>
-   <button class="option" onclick="hotChoice()">ME, obviously 😂</button>
+   <button class="option hot-option" onclick="hotChoice(this)">Me 🔥</button>
+   <button class="option hot-option" onclick="hotChoice(this)">Still me 😏</button>
+   <button class="option hot-option" onclick="hotChoice(this)">Definitely ME ❤️</button>
+   <button class="option hot-option" onclick="hotChoice(this)">ME, obviously 😂</button>
   </div>
  </div>
 </div>
@@ -206,13 +206,15 @@ function next(n){
 }
 
 const runaway=document.getElementById('runaway');
+const firstCard=runaway.closest('.card');
 function escapeButton(){
- const margin=25;
- const maxX=window.innerWidth-runaway.offsetWidth-margin;
- const maxY=window.innerHeight-runaway.offsetHeight-margin;
- const x=Math.max(margin,Math.random()*maxX);
- const y=Math.max(margin,Math.random()*maxY);
- runaway.style.position='fixed';
+ const rect=firstCard.getBoundingClientRect();
+ const margin=18;
+ const maxX=Math.max(margin,rect.width-runaway.offsetWidth-margin);
+ const maxY=Math.max(margin,rect.height-runaway.offsetHeight-margin);
+ const x=margin+Math.random()*Math.max(0,maxX-margin);
+ const y=margin+Math.random()*Math.max(0,maxY-margin);
+ runaway.style.position='absolute';
  runaway.style.left=x+'px';
  runaway.style.top=y+'px';
  runaway.style.zIndex=20;
@@ -233,17 +235,39 @@ function popup(type,title,text,action){
 }
 function closePopup(){document.getElementById('overlay').classList.remove('show')}
 
-function prettyChoice(){
- popup('pretty','Correct answer! 👑','I knew you would get that one right. There was never any competition. ❤️');
- setTimeout(()=>{if(document.getElementById('overlay').classList.contains('show')){
-   closePopup(); next(5);
- }},1500);
+const answered = {
+  pretty: new Set(),
+  hot: new Set()
+};
+
+function prettyChoice(button){
+  if(button.dataset.answered === 'true') return;
+
+  button.dataset.answered = 'true';
+  button.style.transform = 'scale(.97)';
+  button.style.opacity = '.65';
+  answered.pretty.add(button);
+
+  if(answered.pretty.size === 4){
+    next(5);
+  } else {
+    popup('pretty','Correct answer! 👑','I knew you would get that one right. There was never any competition. ❤️');
+  }
 }
-function hotChoice(){
- popup('hot','CORRECT! 🔥','Okay, now you are officially ready for the final challenge... 😏');
- setTimeout(()=>{if(document.getElementById('overlay').classList.contains('show')){
-   closePopup(); next(6);
- }},1500);
+
+function hotChoice(button){
+  if(button.dataset.answered === 'true') return;
+
+  button.dataset.answered = 'true';
+  button.style.transform = 'scale(.97)';
+  button.style.opacity = '.65';
+  answered.hot.add(button);
+
+  if(answered.hot.size === 4){
+    next(6);
+  } else {
+    popup('hot','CORRECT! 🔥','Okay, now you are officially ready for the final challenge... 😏');
+  }
 }
 let won=false;
 function winGame(cell){
