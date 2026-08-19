@@ -3,218 +3,300 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Happy Valentine's ❤️</title>
+<title>For You ❤️</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',sans-serif}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden}
 body{
-  background:linear-gradient(135deg,#ff758c,#ff7eb3);
-  color:white;
-  overflow-x:hidden;
+  font-family:Inter,Arial,sans-serif;
+  color:#fff;
+  background:
+    radial-gradient(circle at 20% 20%,rgba(255,182,193,.35),transparent 28%),
+    radial-gradient(circle at 80% 80%,rgba(255,105,180,.25),transparent 30%),
+    linear-gradient(135deg,#210b22,#5b123d 48%,#19091e);
 }
-.section{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:40px 20px;
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;
+  background-image:radial-gradient(#fff 1px,transparent 1px);
+  background-size:32px 32px;
 }
+.screen{
+  position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+  padding:25px;overflow:hidden;animation:fade .7s ease;
+}
+.screen.active{display:flex}
 .card{
-  background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(12px);
-  padding:30px;
-  border-radius:20px;
-  max-width:600px;
-  width:100%;
-  min-height:85vh;
-  box-shadow:0 20px 40px rgba(0,0,0,0.25);
-  animation:fadeIn 1s ease;
+  position:relative;width:min(760px,94vw);max-height:90vh;overflow:auto;
+  padding:45px 35px;text-align:center;border:1px solid rgba(255,255,255,.25);
+  border-radius:30px;background:rgba(255,255,255,.09);
+  backdrop-filter:blur(15px);box-shadow:0 20px 70px rgba(0,0,0,.35);
 }
-input{
-  margin-top:15px;
-  padding:12px;
-  width:100%;
-  border-radius:10px;
-  border:none;
-  font-size:16px;
-}
+.card::-webkit-scrollbar{width:5px}.card::-webkit-scrollbar-thumb{background:#ff8fb8;border-radius:10px}
+h1{font-family:Inter,Arial,sans-serif;font-size:clamp(3.2rem,10vw,6.5rem);font-weight:400;line-height:1.05}
+h2{font-family:Inter,Arial,sans-serif;font-size:clamp(2.5rem,7vw,4.5rem);font-weight:400}
+.subtitle{font-size:clamp(1.1rem,3vw,1.5rem);margin:15px 0 30px;color:#ffe7ef}
+.love{color:#ffabc9;text-shadow:0 0 25px rgba(255,120,170,.7)}
+.buttons{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:28px}
 button{
-  margin-top:15px;
-  padding:12px 20px;
-  border:none;
-  border-radius:12px;
-  background:#ff3366;
-  color:white;
-  cursor:pointer;
-  font-size:16px;
-  transition:0.3s;
+  border:0;border-radius:999px;padding:14px 30px;font:600 1rem Poppins,sans-serif;
+  cursor:pointer;transition:.25s;box-shadow:0 8px 25px rgba(0,0,0,.2)
 }
-button:hover{transform:scale(1.05);background:#ff1f5a}
-.hidden{display:none}
-.hint{font-size:14px;margin-top:8px;opacity:0.85}
-
-/* Heart */
-.heart-container{
-  display:flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top:50px;
-  gap: 30px; /* space between text and heart */
+button:hover{transform:translateY(-3px) scale(1.04)}
+.yes,.primary{background:linear-gradient(135deg,#ff4f91,#ff8ab7);color:white}
+.no,.secondary{background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.25)}
+.question-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:28px}
+.option{width:100%;background:rgba(255,255,255,.13);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.option:hover{background:rgba(255,105,180,.3)}
+.small{font-size:.9rem;opacity:.75;margin-top:20px}
+.float{position:fixed;pointer-events:none;z-index:0;animation:floatUp linear forwards}
+.heart{font-size:24px}.bird{font-size:32px;animation:fly 12s linear infinite}
+.corner{position:absolute;font-size:45px;opacity:.75}
+.c1{left:18px;top:18px}.c2{right:18px;top:18px}.c3{left:18px;bottom:18px}.c4{right:18px;bottom:18px}
+.overlay{
+  position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;
+  background:rgba(20,4,18,.65);backdrop-filter:blur(7px);padding:20px
 }
-.tap-text {
-  font-size: 28px;
-  letter-spacing: 1px;
-  margin: 0;
-  z-index: 1;
-}
-.heart{
-  width:40px;
-  height:40px;
-  background:red;
-  position:relative;
-  transform:rotate(-45deg);
-  cursor:pointer;
-  animation:pulse 1.2s infinite;
-}
-.heart:before,
-.heart:after{
-  content:"";
-  width:40px;
-  height:40px;
-  background:red;
-  border-radius:50%;
-  position:absolute;
-}
-.heart:before{top:-50px;left:0} /* reduced overlap */
-.heart:after{left:50px;top:0}  /* reduced overlap */
-
-@keyframes pulse{
-  0%{transform:rotate(-45deg) scale(1)}
-  50%{transform:rotate(-45deg) scale(1.1)}
-  100%{transform:rotate(-45deg) scale(1)}
-}
-
-.firework{
-  position:fixed;
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  animation:explode 1s ease-out forwards;
-}
-
-@keyframes explode{
-  0%{transform:translate(0,0);opacity:1}
-  100%{transform:translate(var(--x),var(--y));opacity:0}
-}
-
-@keyframes fadeIn{
-  from{opacity:0;transform:translateY(20px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
-.final-message{
-  font-size:32px;
-  margin-top:30px;
-  animation:fadeIn 1.5s ease;
-}
+.overlay.show{display:flex}
+.modal{width:min(500px,92vw);text-align:center;padding:38px;border-radius:28px;background:linear-gradient(145deg,#6d194d,#35112f);border:1px solid #ff9fc4;box-shadow:0 0 60px rgba(255,80,160,.35)}
+.modal h3{font-family:"Great Vibes";font-size:3rem;font-weight:400}.modal p{margin:15px 0 25px}
+#letterText{font-size:1.1rem;line-height:2;color:#ffeef5;margin:25px 0}
+.ttt{width:min(360px,80vw);margin:25px auto;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cell{aspect-ratio:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;font-family:Inter,Arial,sans-serif;color:#ffb0cd}
+.win-message{font-size:1rem;color:#ffd7e5;margin-bottom:12px}
+.firework{position:fixed;z-index:150;font-size:40px;pointer-events:none;animation:burst 1.5s ease-out forwards}
+.flower{position:fixed;z-index:149;font-size:35px;pointer-events:none;animation:flowerFall 3s linear forwards}
+#finalMessage{font-size:clamp(1rem,2.5vw,1.25rem);line-height:2;text-align:left;background:rgba(0,0,0,.12);padding:25px;border-radius:20px}
+@keyframes fade{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+@keyframes floatUp{from{transform:translateY(110vh) rotate(0);opacity:0}15%{opacity:.8}to{transform:translateY(-15vh) rotate(360deg);opacity:0}}
+@keyframes fly{0%{left:-10%;transform:translateY(0)}50%{transform:translateY(-70px)}100%{left:110%;transform:translateY(0)}}
+@keyframes burst{0%{transform:scale(.2);opacity:1}70%{transform:scale(2) rotate(180deg);opacity:1}100%{transform:scale(3) translateY(-100px);opacity:0}}
+@keyframes flowerFall{0%{transform:translateY(-10vh) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(600deg);opacity:0}}
+@media(max-width:550px){.card{padding:35px 20px}.question-options{grid-template-columns:1fr 1fr}.buttons{gap:12px}button{padding:12px 23px}}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div class="section" id="login">
+<div class="screen active" id="s1">
   <div class="card">
-    <h1>❤️ A Valentine Secret ❤️</h1>
-    <p>Only one person in this world knows this password.</p>
-    <input type="password" id="password" placeholder="Enter password">
-    <button type="button" onclick="checkPassword()">Unlock</button>
-    <div class="hint">Hint: You say this to me as a reply for almost everything when you're mad 😏 (no spaces)</div>
+    <span class="corner c1">🌹</span><span class="corner c2">🕊️</span>
+    <span class="corner c3">🌸</span><span class="corner c4">❤️</span>
+    <h1>Good Morning</h1>
+    <div class="subtitle">A little question for the most special person...</div>
+    <h2 class="love">I love you. Do you?</h2>
+    <div class="buttons">
+      <button class="yes" onclick="next(2)">YES ❤️</button>
+      <button class="no" id="runaway">NO 😏</button>
+    </div>
   </div>
 </div>
 
-<!-- MAIN CONTENT -->
-<div class="section hidden" id="main">
-  <div class="card">
-    <h1>My Love 💌</h1>
-    <p style="line-height:1.8;margin-top:15px;">
-      Since you came into my life, everything feels brighter. 
-      You are the calm in my chaos, the smile behind my random thoughts, 
-      and the warmth that makes ordinary days feel magical. 
-      Your laugh is my favorite sound, your happiness my favorite goal. 
-      I don’t need a special day to love you… but today, I just want to say
-      you mean more to me than words could ever fully express. sorry sometime
-      i acts weird and makes you off sorry but know that i have alot whole lot 
-      of patience for you i love you and i will be here for you always forever. 
-    </p>
-
-    <div class="heart-container">
-      <h2 class="tap-text">👇 Tap The Heart 👇</h2>
-      <div id="heart" class="heart" onclick="explodeHeart()"></div>
-      <div id="valentineMessage" class="final-message hidden">
-        🎆 Happy Valentine My Love ❤️
-      </div>
-    </div>
-
+<div class="screen" id="s2">
+ <div class="card">
+  <div class="corner c1">🌷</div><div class="corner c2">💗</div>
+  <h2>Did you sleep well?</h2>
+  <div class="subtitle">Be honest... I won't judge you 🥺</div>
+  <div class="buttons">
+   <button class="yes" onclick="popup('amazing','AMAZING! ❤️','I am so happy you slept well! Now you have enough energy to be adorable today. 😌')">YES 😴</button>
+   <button class="no" onclick="popup('rest','Aww... 🥺','You need more rest! Please take care of yourself, okay? ❤️')">NO 😭</button>
   </div>
+  <button class="primary" onclick="next(3)" style="margin-top:30px">Next question →</button>
+ </div>
+</div>
+
+<div class="screen" id="s3">
+ <div class="card">
+  <span class="corner c1">🌸</span><span class="corner c2">✨</span>
+  <h2>How are you feeling?</h2>
+  <div class="question-options">
+   <button class="option" onclick="popup('good','YAY! 💕','That is exactly what I wanted to hear! Keep that beautiful smile going. 😊')">Good 😊</button>
+   <button class="option" onclick="popup('bad','Why is it so sad? 🥺','Come here. Sending you a giant virtual hug right now. 🤗❤️')">Bad 🥺</button>
+  </div>
+  <button class="primary" onclick="next(4)" style="margin-top:30px">Next →</button>
+ </div>
+</div>
+
+<div class="screen" id="s4">
+ <div class="card">
+  <h2>Who is the prettiest lady<br>in this whole wide world? 👑</h2>
+  <div class="question-options">
+   <button class="option" onclick="prettyChoice()">Me 😌</button>
+   <button class="option" onclick="prettyChoice()">Obviously me 💅</button>
+   <button class="option" onclick="prettyChoice()">ME! ❤️</button>
+   <button class="option" onclick="prettyChoice()">Who else? 😂</button>
+  </div>
+ </div>
+</div>
+
+<div class="screen" id="s5">
+ <div class="card">
+  <h2>Who is the hottest lady<br>in the entire world? 🔥</h2>
+  <div class="subtitle">Think very carefully... there is only one correct answer.</div>
+  <div class="question-options">
+   <button class="option" onclick="hotChoice()">Me 🔥</button>
+   <button class="option" onclick="hotChoice()">Still me 😏</button>
+   <button class="option" onclick="hotChoice()">Definitely ME ❤️</button>
+   <button class="option" onclick="hotChoice()">ME, obviously 😂</button>
+  </div>
+ </div>
+</div>
+
+<div class="screen" id="s6">
+ <div class="card">
+  <h2>Only the most beautiful,<br>pretty, hot & sexy woman<br>can beat this game. 🔥👑</h2>
+  <div class="win-message">Place your X anywhere. I have a feeling you'll be very good at this... 😉</div>
+  <div class="ttt" id="board">
+   <div class="cell" onclick="winGame(this)"></div><div class="cell" onclick="winGame(this)"></div><div class="cell" onclick="winGame(this)"></div>
+   <div class="cell" onclick="winGame(this)"></div><div class="cell" onclick="winGame(this)"></div><div class="cell" onclick="winGame(this)"></div>
+   <div class="cell" onclick="winGame(this)"></div><div class="cell" onclick="winGame(this)"></div><div class="cell" onclick="winGame(this)"></div>
+  </div>
+ </div>
+</div>
+
+<div class="screen" id="s7">
+ <div class="card">
+  <span class="corner c1">💌</span><span class="corner c2">🌹</span>
+  <h2>A little letter for you...</h2>
+  <div id="letterText">
+   Since you proved that you are very beautiful, pretty, hot and sexy,
+   I want you to know that I think the exact same thing as well.
+   <br><br>
+   And I love you. ❤️
+  </div>
+  <button class="primary" onclick="popup('proof','Proof? 😏','I have something important to tell you...','proof')">Click to see proof ❤️</button>
+ </div>
+</div>
+
+<div class="screen" id="s8">
+ <div class="card">
+  <h2>Okay... one last thing. ❤️</h2>
+  <div id="finalMessage">
+   To the people whose eyes are filled with ugliness... not mine. 😂<br><br>
+   In my eyes, you still are the most prettiest — the synonym to beauty. Just know it.
+   <br><br>
+   You are really good, cute, pretty, beautiful, hot, sexy... whatever words you use
+   to describe something that's tempting, pleasing, comforting — <strong>you are everything
+   that I want, everything that I need, everything that I love.</strong>
+   <br><br>
+   I hope this message makes your day and gives you confidence.
+   <br><br>
+   ❤️ I love you. ❤️
+  </div>
+  <button class="primary" onclick="popup('end','THE END ❤️','Now go have an amazing day, beautiful. 🌹✨')">Finish 💕</button>
+ </div>
+</div>
+
+<div class="overlay" id="overlay">
+ <div class="modal">
+  <h3 id="modalTitle"></h3>
+  <p id="modalText"></p>
+  <button class="primary" id="modalBtn" onclick="closePopup()">Okay ❤️</button>
+ </div>
 </div>
 
 <script>
-const SECRET = "whatever";
+const screens=document.querySelectorAll('.screen');
+let current=1;
 
-// Allow Enter key to trigger unlock
-window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('password').addEventListener('keypress', function(e){
-    if(e.key === 'Enter') checkPassword();
-  });
+function next(n){
+ screens.forEach(s=>s.classList.remove('active'));
+ document.getElementById('s'+n).classList.add('active');
+ current=n;
+}
+
+const runaway=document.getElementById('runaway');
+function escapeButton(){
+ const margin=25;
+ const maxX=window.innerWidth-runaway.offsetWidth-margin;
+ const maxY=window.innerHeight-runaway.offsetHeight-margin;
+ const x=Math.max(margin,Math.random()*maxX);
+ const y=Math.max(margin,Math.random()*maxY);
+ runaway.style.position='fixed';
+ runaway.style.left=x+'px';
+ runaway.style.top=y+'px';
+ runaway.style.zIndex=20;
+}
+runaway.addEventListener('mouseenter',escapeButton);
+runaway.addEventListener('touchstart',e=>{e.preventDefault();escapeButton()});
+
+function popup(type,title,text,action){
+ document.getElementById('modalTitle').textContent=title;
+ document.getElementById('modalText').textContent=text;
+ const btn=document.getElementById('modalBtn');
+ btn.textContent=type==='proof'?'Tell me why 👀':'Okay ❤️';
+ btn.onclick=()=>{
+   closePopup();
+   if(action==='proof') next(8);
+ };
+ document.getElementById('overlay').classList.add('show');
+}
+function closePopup(){document.getElementById('overlay').classList.remove('show')}
+
+function prettyChoice(){
+ popup('pretty','Correct answer! 👑','I knew you would get that one right. There was never any competition. ❤️');
+ setTimeout(()=>{if(document.getElementById('overlay').classList.contains('show')){
+   closePopup(); next(5);
+ }},1500);
+}
+function hotChoice(){
+ popup('hot','CORRECT! 🔥','Okay, now you are officially ready for the final challenge... 😏');
+ setTimeout(()=>{if(document.getElementById('overlay').classList.contains('show')){
+   closePopup(); next(6);
+ }},1500);
+}
+let won=false;
+function winGame(cell){
+ if(won)return;
+ won=true;
+ const cells=[...document.querySelectorAll('.cell')];
+ cells.forEach(c=>c.textContent='X');
+ popup('win','CONGRATULATIONS! 🎉','You won! Obviously. The game never stood a chance against you. 👑❤️');
+ fireworks();
+ setTimeout(()=>{closePopup();next(7)},2600);
+}
+function fireworks(){
+ const emojis=['🎆','✨','💖','🌸','🌹','💐','🎉','❤️'];
+ for(let i=0;i<35;i++){
+   setTimeout(()=>{
+    const e=document.createElement('div');
+    e.className=i%3===0?'flower':'firework';
+    e.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    e.style.left=Math.random()*100+'vw';
+    e.style.top=Math.random()*100+'vh';
+    document.body.appendChild(e);
+    setTimeout(()=>e.remove(),3500);
+   },i*60);
+ }
+}
+
+// Floating hearts, flowers and birds
+const decorations=['❤️','💗','💕','💖','🌸','🌹','✨'];
+setInterval(()=>{
+ const e=document.createElement('div');
+ e.className='float heart';
+ e.textContent=decorations[Math.floor(Math.random()*decorations.length)];
+ e.style.left=Math.random()*100+'vw';
+ e.style.fontSize=(16+Math.random()*25)+'px';
+ e.style.animationDuration=(6+Math.random()*7)+'s';
+ document.body.appendChild(e);
+ setTimeout(()=>e.remove(),14000);
+},700);
+
+setInterval(()=>{
+ const b=document.createElement('div');
+ b.className='float bird';
+ b.textContent='🕊️';
+ b.style.top=(10+Math.random()*45)+'vh';
+ b.style.animationDuration=(9+Math.random()*6)+'s';
+ document.body.appendChild(b);
+ setTimeout(()=>b.remove(),16000);
+},5000);
+
+// Clicking outside modal closes it
+document.getElementById('overlay').addEventListener('click',e=>{
+ if(e.target.id==='overlay')closePopup();
 });
-
-function checkPassword(){
-  const input = document.getElementById('password');
-  const val = input.value.trim();
-
-  if(val.toLowerCase() === SECRET.toLowerCase()){
-    document.getElementById('login').classList.add('hidden');
-    document.getElementById('main').classList.remove('hidden');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  } else {
-    alert("Not quite… try again ❤️");
-    input.value = '';
-  }
-}
-
-function explodeHeart(){
-  const heart = document.getElementById('heart');
-  const message = document.getElementById('valentineMessage');
-
-  heart.style.display = 'none';
-
-  const colors=['#ff0','#ff3','#f0f','#0ff','#fff','#ff5722'];
-  for(let i=0;i<80;i++){
-    const fw=document.createElement('div');
-    fw.className='firework';
-    fw.style.background=colors[Math.floor(Math.random()*colors.length)];
-    fw.style.left='50%';
-    fw.style.top='60%';
-    fw.style.setProperty('--x',(Math.random()*500-250)+'px');
-    fw.style.setProperty('--y',(Math.random()*500-250)+'px');
-    document.body.appendChild(fw);
-    setTimeout(()=>fw.remove(),1000);
-  }
-
-  setTimeout(()=>{
-    message.classList.remove('hidden');
-    message.style.transform = 'scale(0.5)';
-    message.style.opacity = '0';
-    message.style.transition = 'all 0.6s ease';
-    setTimeout(()=>{
-      message.style.transform = 'scale(1)';
-      message.style.opacity = '1';
-    },50);
-  },400);
-}
 </script>
-
 </body>
 </html>
-
